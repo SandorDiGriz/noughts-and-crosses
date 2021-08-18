@@ -21,45 +21,48 @@ class Board:
             self.rows.append(row)
         return self
 
-    def diagonal_wincoditions(self, line, column):
-        diag_win = {(line + 1, column + 1) : (line + 2, column + 2),
+    def get_all_wincoditions(self, column, line):
+        all_winconditions = {(line + 1, column + 1) : (line + 2, column + 2),
         (line - 1, column - 1) : (line - 2, column - 2),
         (line - 1, column + 1) : (line - 2, column + 2),
         (line + 2, column - 1) : (line - 2, column + 1),
-        (line - 1, column - 1) : (line + 1, column + 1)
+        (line - 1, column - 1) : (line + 1, column + 1),
+        (line - 1, column) : (line - 2, column),
+        (line - 1, column) : (line + 1, column),
+        (line + 1, column) : (line + 2, column),
+        (line, column - 1) : (line, column - 2),
+        (line, column + 1) : (line, column + 2),
+        (line, column - 1) : (line, column + 1)
         }
-        return diag_win
+        fit_winconditions = dict()
+        for i, j in all_winconditions:
+            try:
+                if  self.rows[i[0]][i[1]] and self.rows[j[0]][j[1]]:
+                    fit_winconditions.append((i[0], i[1]), (j[0], j[1]))
+            except IndexError:
+                continue
+        return fit_winconditions
 
     def check_for_winner(self, column, line, turn):
         column = string.ascii_uppercase.index(column) + 1
         letter = self.define_turn(turn)
         victory = False
-        diag_wincons = self.diagonal_wincoditions(line, column)
+        diag_wincons = self.get_all_wincoditions(column, line)
         for key, val in diag_wincons.items():
-            try:
-                print(self.rows[key[0]][key[1]], self.rows[val[0]][val[1]])
-                if self.rows[key[0]][key[1]] == letter and self.rows[val[0]][val[1]] == letter:
-                    return not victory
-            except IndexError:
+            #print(self.rows)
+            print(key, val)
+            #print(self.rows[key[0]][key[1]], self.rows[val[0]][val[1]])
+            if not len(self.rows) - key[0] > 0 and len(self.rows[line]) - key[1] > 0:
                 continue
-        if len(self.rows) > line:
-            if self.rows[line - 1][column] == letter and self.rows[line - 2][column] == letter:
-                return not victory
-            elif self.rows[line - 1][column] == letter and self.rows[line + 1][column] == letter:
-                return not victory
-        elif len(self.rows) < line:
-            if self.rows[line + 1][column] == letter and self.rows[line + 2][column] == letter:
-                return not victory
+            elif not key[0] - len(self.rows) > 0 and key[1 ] - len(self.rows[line]) - key[1] > 0:
+                continue
+            elif not len(self.rows) - val[0] > 0 and len(self.rows[line]) - val[1] > 0:
+                continue
+            elif not val[0] - len(self.rows) > 0 and val[1 ] - len(self.rows[line]) - val[1] > 0:
+                continue
 
-        if len(self.rows[line]) > column:
-            if self.rows[line][column - 1] == letter and self.rows[line][column - 2] == letter:
+            if self.rows[key[0]][key[1]] == letter and self.rows[val[0]][val[1]] == letter:
                 return not victory
-        elif len(self.rows[line]) < column:
-            if self.rows[line][column + 1] == letter and self.rows[line][column + 2] == letter:
-                return not victory
-        elif self.rows[line][column - 1] == letter and self.rows[line][column + 1] == letter:
-            return not victory
-        
         return victory
 
     
