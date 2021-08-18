@@ -21,14 +21,20 @@ class Board:
             self.rows.append(row)
         return self
 
-    def check_for_winner(self, column, line, letter):
+    def check_for_winner(self, column, line, turn):
+        letter = self.define_turn(turn)
+        victory = False
         if self.rows[line][column - 1] == letter and self.rows[line][column + 1] == letter:
-            return print('gg')
+            return not victory
         elif self.rows[line - 1][column] == letter and self.rows[line + 1][column] == letter:
-            return [print('gg')]
+            return not victory
         elif self.rows[line - 1][column - 1] == letter and self.rows[line + 1][column + 1] == letter:
-            return [print('gg')]
+            return not victory
 
+    
+    def game_over(victory):
+        if victory:
+            return True
 
     def get_coordinates(self):
         print('print coordinates')
@@ -36,16 +42,19 @@ class Board:
         coordinates[1] = int(coordinates[1]) - 1
         return coordinates
 
+
+    def define_turn(self, turn):
+        if turn % 2 == 0:
+            return 'O'
+        else:
+            return 'X'
+
     def update_grid(self, column, line, turn):
         column = string.ascii_uppercase.index(column) + 1
-        letter = str
+        letter = self.define_turn(turn)
         try:
             if self.rows[line][column] != '':
                 raise Exception('Overlay exception')
-            if turn % 2 == 0:
-                letter = 'O'
-            else:
-                letter = 'X'
             self.rows[line][column] = letter
         except Exception as e:
             print(e)
