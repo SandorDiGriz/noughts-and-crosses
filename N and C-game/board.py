@@ -22,14 +22,27 @@ class Board:
         return self
 
     def check_for_winner(self, column, line, turn):
+        column = string.ascii_uppercase.index(column) + 1
         letter = self.define_turn(turn)
         victory = False
-        if self.rows[line][column - 1] == letter and self.rows[line][column + 1] == letter:
+        if len(self.rows) > line:
+            if self.rows[line - 1][column] == letter and self.rows[line - 2][column] == letter:
+                return not victory
+            elif self.rows[line - 1][column] == letter and self.rows[line + 1][column] == letter:
+                return not victory
+        elif len(self.rows) < line:
+            if self.rows[line + 1][column] == letter and self.rows[line + 2][column] == letter:
+                return not victory
+
+        if len(self.rows[line]) > column:
+            if self.rows[line][column - 1] == letter and self.rows[line][column - 2] == letter:
+                return not victory
+        elif len(self.rows[line]) < column:
+            if self.rows[line][column + 1] == letter and self.rows[line][column + 2] == letter:
+                return not victory
+        elif self.rows[line][column - 1] == letter and self.rows[line][column + 1] == letter:
             return not victory
-        elif self.rows[line - 1][column] == letter and self.rows[line + 1][column] == letter:
-            return not victory
-        elif self.rows[line - 1][column - 1] == letter and self.rows[line + 1][column + 1] == letter:
-            return not victory
+        return victory
 
     
     def game_over(victory):
