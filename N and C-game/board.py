@@ -21,23 +21,27 @@ class Board:
             self.rows.append(row)
         return self
 
+    def diagonal_wincoditions(self, line, column):
+        diag_win = {(line + 1, column + 1) : (line + 2, column + 2),
+        (line - 1, column - 1) : (line - 2, column - 2),
+        (line - 1, column + 1) : (line - 2, column + 2),
+        (line + 2, column - 1) : (line - 2, column + 1),
+        (line - 1, column - 1) : (line + 1, column + 1)
+        }
+        return diag_win
+
     def check_for_winner(self, column, line, turn):
         column = string.ascii_uppercase.index(column) + 1
         letter = self.define_turn(turn)
         victory = False
-        try:
-            if self.rows[line + 1][column + 1] == letter and self.rows[line + 2][column + 2] == letter:
+        diag_wincons = self.diagonal_wincoditions(line, column)
+        for key, val in diag_wincons.items():
+            try:
+                print(self.rows[key[0]][key[1]], self.rows[val[0]][val[1]])
+                if self.rows[key[0]][key[1]] == letter and self.rows[val[0]][val[1]] == letter:
                     return not victory
-            elif self.rows[line - 1][column - 1] == letter and self.rows[line - 2][column - 2] == letter:
-                    return not victory
-            elif self.rows[line - 1][column + 1] == letter and self.rows[line - 2][column + 2] == letter:
-                    return not victory
-            elif self.rows[line + 2][column - 1] == letter and self.rows[line - 2][column + 1] == letter:
-                    return not victory
-            elif self.rows[line - 1][column - 1] == letter and self.rows[line + 1][column + 1] == letter:
-                    return not victory
-        except IndexError:
-            pass
+            except IndexError:
+                continue
         if len(self.rows) > line:
             if self.rows[line - 1][column] == letter and self.rows[line - 2][column] == letter:
                 return not victory

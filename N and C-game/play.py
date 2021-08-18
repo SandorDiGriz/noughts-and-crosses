@@ -23,11 +23,9 @@ def play():
     game = True
     while game:
         turn += 1
-        print(board.rows)
         board.print_grid()
         coordinates = board.get_coordinates()
         board.update_grid(coordinates[0], coordinates[1], turn)
-        print(board.rows[coordinates[1]])
         if board.check_for_winner(coordinates[0], coordinates[1], turn):
             board.print_grid()
             winner = P1 if turn % 2 == 0 else P2
