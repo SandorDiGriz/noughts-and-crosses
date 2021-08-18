@@ -25,29 +25,19 @@ class Board:
         column = string.ascii_uppercase.index(column) + 1
         letter = self.define_turn(turn)
         victory = False
-        if self.rows[0][1] == self.rows[1][2] == self.rows[2][3] == letter:
-            return not victory
-        elif self.rows[2][1] == self.rows[1][2] == self.rows[0][3] == letter:
-            return not victory
-
-        if len(self.rows) > line and len(self.rows[line]) > column:
-            if self.rows[line - 2][column - 2] == letter and self.rows[line - 1][column - 1] == letter:
-                return not victory
-        elif len(self.rows) < line and len(self.rows[line]) < column:
+        try:
             if self.rows[line + 1][column + 1] == letter and self.rows[line + 2][column + 2] == letter:
-                return not victory
-
-        if self.rows[line + 1][column + 1] == letter and self.rows[line + 2][column + 2] == letter:
-                return not victory
-        elif self.rows[line - 1][column + 1] == letter and self.rows[line - 2][column + 2] == letter:
-                return not victory
-        elif self.rows[line + 2][column - 1] == letter and self.rows[line - 2][column + 1] == letter:
-                return not victory
-        elif self.rows[line - 1][column - 1] == letter and self.rows[line + 1][column + 1] == letter:
-                return not victory
-        elif self.rows[line - 1][column + 1] == letter and self.rows[line + 1][column - 1] == letter:
-                return not victory
-
+                    return not victory
+            elif self.rows[line - 1][column - 1] == letter and self.rows[line - 2][column - 2] == letter:
+                    return not victory
+            elif self.rows[line - 1][column + 1] == letter and self.rows[line - 2][column + 2] == letter:
+                    return not victory
+            elif self.rows[line + 2][column - 1] == letter and self.rows[line - 2][column + 1] == letter:
+                    return not victory
+            elif self.rows[line - 1][column - 1] == letter and self.rows[line + 1][column + 1] == letter:
+                    return not victory
+        except IndexError:
+            pass
         if len(self.rows) > line:
             if self.rows[line - 1][column] == letter and self.rows[line - 2][column] == letter:
                 return not victory

@@ -1,14 +1,25 @@
 from board import Board
 
-
-def greetings():
-    print('my honour', '\ndefine grid')
-
+def define_winner(turn):
+    if turn % 2 == 0:
+        return 
+    else:
+        return 
+       
 def play():
-    turn = 0
-    greetings()
+    print('Welcome, strangers!', '\nPlease, define your grid (''3 3'' for example)')
+    grid_size = list(map(int, input().split()))
+    height, width = grid_size[0], grid_size[1]
     board = Board()
-    board.building_grid(height=int(input()), width=int(input()))
+    board.building_grid(height, width)
+    turn = 0
+
+    print('P1, introduce yourself')
+    P1 = input()
+    print('P2, introduce yourself')
+    P2 = input()
+
+    winner = None
     game = True
     while game:
         turn += 1
@@ -19,8 +30,10 @@ def play():
         print(board.rows[coordinates[1]])
         if board.check_for_winner(coordinates[0], coordinates[1], turn):
             board.print_grid()
-            print('GAME OVER')
+            winner = P1 if turn % 2 == 0 else P2
+            print('GAME OVER', winner, 'wins')
             game = not game
+            
 
 
 play()
