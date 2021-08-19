@@ -29,38 +29,30 @@ class Board:
             (line - 1, column) : (line + 1, column),
             (line + 1, column) : (line + 2, column),
             (line - 1, column) : (line - 2, column),
+            (line - 1, column - 1) : (line - 2, column - 2),
+            (line + 1, column + 1) : (line + 2, column + 2),
+            #(line - 1, column - 1) : (line + 1, column + 1),
+            #(line - 1, column - 1) : (line + 2, column + 2),
+            (line - 1, column + 1) : (line - 2, column + 2),
+            (line + 1, column - 1) : (line + 2, column - 2)
             }
             return all_winconditions
-    
-    def get_spare_winconditions(self, column, line):
-        spare_wincons = {(line - 1, column - 1) : (line - 2, column - 2),
-            (line + 1, column + 1) : (line + 2, column + 2),
-            (line - 1, column - 1) : (line + 1, column + 1),
-            #(line - 1, column - 1) : (line + 2, column + 2),
-            #(line - 1, column + 1) : (line - 2, column + 2),
-            #(line + 1, column - 1) : (line + 2, column - 1)
-        }
-        return spare_wincons
 
     def check_for_winner(self, column, line, turn):
         column = string.ascii_uppercase.index(column) + 1
         letter = self.define_turn(turn)
         victory = False
         wincons = self.get_all_wincoditions(column, line)
-        win_con = self.get_spare_winconditions(column, line)
         for key, val in wincons.items():
             try:
                 if self.rows[key[0]][key[1]] == letter and self.rows[val[0]][val[1]] == letter:
                     return not victory
-            except IndexError:
-                continue
-        for key, val in win_con.items():
-            try:
-                if self.rows[key[0]][key[1]] == letter and self.rows[val[0]][val[1]] == letter:
+                elif self.rows[line - 1][column - 1] == letter and self.rows[line + 1][column + 1] == letter:
+                    return not victory
+                elif self.rows[line - 1][column - 1] == letter and self.rows[line + 2][column + 2] == letter:
                     return not victory
             except IndexError:
-                print(line, column)
-                print(key, val)
+                continue
 
         return victory
 
