@@ -5,7 +5,7 @@ def define_winner(turn):
         return 
     else:
         return 
-       
+
 def play():
     print('Welcome, strangers!', '\nPlease, define your grid (''3 3'' for example)')
     grid_size = list(map(int, input().split()))
@@ -13,6 +13,7 @@ def play():
     board = Board()
     board.building_grid(height, width)
     turn = 0
+    win_row_size = max(grid_size)
 
     print('P1, introduce yourself')
     P1 = input()
@@ -26,9 +27,9 @@ def play():
         board.print_grid()
         coordinates = board.get_coordinates()
         board.update_grid(coordinates[0], coordinates[1], turn)
-        if board.check_for_winner(coordinates[0], coordinates[1], turn):
+        if board.check_for_winner(coordinates[0], coordinates[1], turn, win_row_size):
             board.print_grid()
-            winner = P1 if turn % 2 == 0 else P2
+            winner = P2 if turn % 2 == 0 else P1
             print('GAME OVER', winner, 'wins')
             game = not game
             

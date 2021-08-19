@@ -21,40 +21,49 @@ class Board:
             self.rows.append(row)
         return self
 
-    def get_all_wincoditions(self, column, line):
-            all_winconditions = {
-            (line, column + 1) : (line, column + 2),
-            (line, column - 1) : (line, column + 1),
-            (line, column - 1) : (line, column - 2),
-            (line - 1, column) : (line + 1, column),
-            (line + 1, column) : (line + 2, column),
-            (line - 1, column) : (line - 2, column),
-            (line - 1, column - 1) : (line - 2, column - 2),
-            (line + 1, column + 1) : (line + 2, column + 2),
-            #(line - 1, column - 1) : (line + 1, column + 1),
-            #(line - 1, column - 1) : (line + 2, column + 2),
-            (line - 1, column + 1) : (line - 2, column + 2),
-            (line + 1, column - 1) : (line + 2, column - 2)
-            }
-            return all_winconditions
+    def get_diag(self):
+        diags = []
+        right_diag = []
+        left_diag = []
+        right_diag_count = 1
+        left_diag_count = len(self.rows[0]) - 1
+        for row in self.rows:
+            if right_diag_count == len(self.rows[0]) or left_diag_count < 0:
+                break
+            right_diag.append(row[right_diag_count])
+            left_diag.append(row[left_diag_count])
+            right_diag_count += 1
+            left_diag_count -= 1
+        diags = [right_diag] + [left_diag]
+        return diags
 
-    def check_for_winner(self, column, line, turn):
+
+    def check_for_winner(self, column, line, turn, win_row_size):
         column = string.ascii_uppercase.index(column) + 1
         letter = self.define_turn(turn)
         victory = False
-        wincons = self.get_all_wincoditions(column, line)
-        for key, val in wincons.items():
-            try:
-                if self.rows[key[0]][key[1]] == letter and self.rows[val[0]][val[1]] == letter:
+        win_column_count = 0
+        diag = self.get_diag()
+        for row in self.rows:
+            win_line_count = 0
+            if row[column] == letter:
+                win_column_count += 1
+                if win_column_count == win_row_size:
                     return not victory
-                elif self.rows[line - 1][column - 1] == letter and self.rows[line + 1][column + 1] == letter:
-                    return not victory
-                elif self.rows[line - 1][column - 1] == letter and self.rows[line + 2][column + 2] == letter:
-                    return not victory
-            except IndexError:
-                continue
-
+            for elem in row:
+                if elem == letter:
+                    win_line_count += 1
+                    if win_line_count == win_row_size:
+                        return not victory
+        for i in diag:
+            win_diag_count = 0
+            for j in i:
+                if j == letter:
+                    win_diag_count += 1
+                    if win_diag_count == win_row_size:
+                        return not victory     
         return victory
+
 
     
     def game_over(victory):
