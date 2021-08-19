@@ -21,26 +21,47 @@ class Board:
             self.rows.append(row)
         return self
 
-
+    def get_all_wincoditions(self, column, line):
+            all_winconditions = {
+            (line, column + 1) : (line, column + 2),
+            (line, column - 1) : (line, column + 1),
+            (line, column - 1) : (line, column - 2),
+            (line - 1, column) : (line + 1, column),
+            (line + 1, column) : (line + 2, column),
+            (line - 1, column) : (line - 2, column),
+            (line - 1, column - 1) : (line - 2, column - 2),
+            (line + 1, column + 1) : (line + 2, column + 2),
+            (line - 1, column - 1) : (line + 1, column + 1),
+            (line - 1, column - 1) : (line + 2, column + 2),
+            (line - 1, column + 1) : (line - 2, column + 2),
+            (line + 1, column - 1) : (line + 2, column - 1)
+            }
+            return all_winconditions
+    
+    def get_spare_winconditions(self, column, line):
+        spare_wincons = {(line - 1, column - 1) : (line - 2, column - 2),
+            (line + 1, column + 1) : (line + 2, column + 2),
+            (line - 1, column - 1) : (line + 1, column + 1),
+            (line - 1, column - 1) : (line + 2, column + 2),
+            (line - 1, column + 1) : (line - 2, column + 2),
+            (line + 1, column - 1) : (line + 2, column - 1)
+        }
+        return spare_wincons
 
     def check_for_winner(self, column, line, turn):
         column = string.ascii_uppercase.index(column) + 1
         letter = self.define_turn(turn)
         victory = False
-        checking = True
-        l_border = -2
-        c_border = 2
-        while checking:
-            try:
-                if self.rows[line + l_border][column - c_border] == letter and self.rows[line - l_border][column + c_border] == letter:
-                    if self.rows[line + l_border][column - c_border] != self.rows[line - l_border][column + c_border]:
-                        return not victory
-                l_border += 1
-                c_border -= 1
-            except IndexError:
+        wincons = self.get_all_wincoditions(column, line)
+        win_con = self.get_spare_winconditions(column, line)
+        for key, val in wincons.items():
+            #print(len(self.rows), len(self.rows[0]))
+            print(key, val)
+            if max(key[0], val[0]) <= len(self.rows) and max(key[1], val[1]) <= len(self.rows[0]) - 1:
+                if self.rows[key[0]][key[1]] == letter and self.rows[val[0]][val[1]] == letter:
+                    return not victory
+            else:
                 continue
-            if l_border >= 2 or c_border <= -2:
-                    checking = not checking
         return victory
 
     
