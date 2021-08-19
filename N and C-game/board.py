@@ -21,48 +21,26 @@ class Board:
             self.rows.append(row)
         return self
 
-    def get_all_wincoditions(self, column, line):
-        all_winconditions = {(line + 1, column + 1) : (line + 2, column + 2),
-        (line - 1, column - 1) : (line - 2, column - 2),
-        (line - 1, column + 1) : (line - 2, column + 2),
-        (line + 2, column - 1) : (line - 2, column + 1),
-        (line - 1, column - 1) : (line + 1, column + 1),
-        (line - 1, column) : (line - 2, column),
-        (line - 1, column) : (line + 1, column),
-        (line + 1, column) : (line + 2, column),
-        (line, column - 1) : (line, column - 2),
-        (line, column + 1) : (line, column + 2),
-        (line, column - 1) : (line, column + 1)
-        }
-        fit_winconditions = dict()
-        for i, j in all_winconditions:
-            try:
-                if  self.rows[i[0]][i[1]] and self.rows[j[0]][j[1]]:
-                    fit_winconditions.append((i[0], i[1]), (j[0], j[1]))
-            except IndexError:
-                continue
-        return fit_winconditions
+
 
     def check_for_winner(self, column, line, turn):
         column = string.ascii_uppercase.index(column) + 1
         letter = self.define_turn(turn)
         victory = False
-        diag_wincons = self.get_all_wincoditions(column, line)
-        for key, val in diag_wincons.items():
-            #print(self.rows)
-            print(key, val)
-            #print(self.rows[key[0]][key[1]], self.rows[val[0]][val[1]])
-            if not len(self.rows) - key[0] > 0 and len(self.rows[line]) - key[1] > 0:
+        checking = True
+        l_border = -2
+        c_border = 2
+        while checking:
+            try:
+                if self.rows[line + l_border][column - c_border] == letter and self.rows[line - l_border][column + c_border] == letter:
+                    if self.rows[line + l_border][column - c_border] != self.rows[line - l_border][column + c_border]:
+                        return not victory
+                l_border += 1
+                c_border -= 1
+            except IndexError:
                 continue
-            elif not key[0] - len(self.rows) > 0 and key[1 ] - len(self.rows[line]) - key[1] > 0:
-                continue
-            elif not len(self.rows) - val[0] > 0 and len(self.rows[line]) - val[1] > 0:
-                continue
-            elif not val[0] - len(self.rows) > 0 and val[1 ] - len(self.rows[line]) - val[1] > 0:
-                continue
-
-            if self.rows[key[0]][key[1]] == letter and self.rows[val[0]][val[1]] == letter:
-                return not victory
+            if l_border >= 2 or c_border <= -2:
+                    checking = not checking
         return victory
 
     
