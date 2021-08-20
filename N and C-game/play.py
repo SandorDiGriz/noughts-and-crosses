@@ -11,14 +11,14 @@ def play():
     grid_size = list(map(int, input().split()))
     height, width = grid_size[0], grid_size[1]
     board = Board()
-    board.building_grid(height, width)
+    board.building_grid(width, height)
     turn = 0
-    win_row_size = max(grid_size)
+    win_row_size = min(grid_size)
 
     print('P1, introduce yourself')
-    P1 = input()
+    player_1 = input()
     print('P2, introduce yourself')
-    P2 = input()
+    player_2 = input()
 
     winner = None
     game = True
@@ -29,8 +29,8 @@ def play():
         board.update_grid(coordinates[0], coordinates[1], turn)
         if board.check_for_winner(coordinates[0], coordinates[1], turn, win_row_size):
             board.print_grid()
-            winner = P2 if turn % 2 == 0 else P1
-            print('GAME OVER', winner, 'wins')
+            winner = player_2 if turn % 2 == 0 else player_1
+            print('GAME OVER' + '\n', winner, 'wins')
             game = not game
             
 
