@@ -1,17 +1,17 @@
-'''File that defines the "Board" class and all operations with the grid
-'''
+"""File that defines the "Board" class and all operations with the grid
+"""
 
 from prettytable import PrettyTable
 import string
 
 
 class Board:
-    '''Class implements all functions for creating the playing
+    """Class implements all functions for creating the playing
     field, changing it and checking for a win or draw
-    '''
+    """
 
     def __init__(self, row_names=None, rows=None):
-        '''Initialisation of grid's markup'''
+        """Initialisation of grid's markup"""
         if row_names is None:
             # Adding an empty string for sync of columns and lines
             row_names = ['']
@@ -21,14 +21,7 @@ class Board:
         self.rows = rows
 
 
-    def build_grid(self, width, height):
-        '''Building the grid using input's data
-        
-        Args:
-        width(str): width of the grid
-        height(str): height of the grid
-        
-        '''
+    def build_grid(self, width: str, height: str):
         # String method is required for column names
         count = 0
         for i in string.ascii_uppercase:
@@ -38,14 +31,14 @@ class Board:
 
         for j in range(height):
             # Filling the grid with empty strings
-            row = ['' for _ in range(width)]
-            row.insert(0, j + 1)
+            row = ['' for _ in range(width + 1)]
+            row[0] = str(j + 1)
             self.rows.append(row)
         return
 
 
     def get_diag(self):
-        '''Gets all diagonals in current grid'''
+        """Gets all diagonals in current grid"""
         diags = []
         # Size of column is equal to the rows in the grid
         column_size = len(self.rows)
@@ -105,15 +98,16 @@ class Board:
         return diags
 
 
-    def check_diag(self, diags, letter, win_row_size):
-        '''Checks diagonals for wincondition
+    @staticmethod
+    def check_diag(diags, letter, win_row_size):
+        """Checks diagonals for wincondition
         
         Args:
         diags (list): all diagonals in the grid
         letter (str): "X" or "O"
         win_row_size (int): number of consecutive characters for a win
 
-        '''
+        """
         for diag in diags:
             win_diag_count = 0
             for elem in diag:
@@ -127,14 +121,14 @@ class Board:
 
 
     def check_vertical_and_flat(self, column, letter, win_row_size):
-        '''Checks vertical and horisontal axes for a wincondition
+        """Checks vertical and horisontal axes for a wincondition
         
         Args:
         column (int): number of a column
         letter (str): "X" or "O"
         win_row_size (int): number of consecutive characters for a win
         
-        '''
+        """
         win_column_count = 0
         win_line_count = 0
         for row in self.rows:
@@ -159,16 +153,15 @@ class Board:
         return False
 
 
-    def check_for_winner(self, column, line, turn, win_row_size):
-        '''Checks for a winconditions in all directions
+    def check_for_winner(self, column, turn, win_row_size):
+        """Checks for a winconditions in all directions
         
         Args:
         column (int): number of a column
-        line (int): number of a line
         letter (str): "X" or "O"
         win_row_size (int): number of consecutive characters for a win
         
-        '''
+        """
         column = string.ascii_uppercase.index(column) + 1
         letter = self.define_turn(turn)
         victory = False
@@ -181,7 +174,7 @@ class Board:
 
 
     def check_for_draw(self):
-        '''Checks grid to be totally filled'''
+        """Checks grid to be totally filled"""
         for row in self.rows:
             for elem in row:
                 if elem == '':
@@ -190,65 +183,43 @@ class Board:
 
 
     def get_coordinates(self):
-        '''Gets coordinates of player's move'''
         # Catching possible input errors
         checking = True
         while checking:
+            #Getting coordinates of player's move
             print('input coordinates to make your move')
             coordinates = input().split()
-            x_coordinate = coordinates[0]
-            y_coordinate = coordinates[1]
-            if x_coordinate == y_coordinate:
+            if len(coordinates) != 2:
                 print('Incorrect letter of a column or number of a line')
                 continue
+            x_coordinate = coordinates[0]
+            y_coordinate = coordinates[1]
             if self.check_coordinates(x_coordinate, y_coordinate):
                 y_coordinate = int(y_coordinate) - 1
                 checking = not checking
         return x_coordinate, y_coordinate
 
-    def check_coordinates(self, x, y):
-        '''Checks for errors in player's input
-        
-        Args:
-        x (str): letter of a column
-        y (str): number of a line
-        
-        '''
-        # Element could be already converted in int 
-        if type(y) == int:
-            pass
-        # Checking whether the element is a digit
-        elif y.isdigit() == False:
-            print('Incorrect letter of a column or number of a line')
-            return False
-        # Checking whether the element is letter in the grid
-        if x not in self.row_names:
-            print('Incorrect letter of a column or number of a line')
-            return False
-        # Checking borders
-        elif int(y) > len(self.rows) or int(y) < 0:
-            print('Incorrect letter of a column or number of a line')
-            return False
+    def check_coordinates(self, x:str, y:str):
+        """Checks whether the first element is suitable letter and
+        second element is in the grid's borders
+        """
+        if (x not in self.row_names or not y.isdigit() or
+            int(y) > len(self.rows) or int(y) <= 0):
+                print('Incorrect letter of a column or number of a line')
+                return False
         return True
 
 
-    def define_player(self, p1, p2, turn):
-        '''Defines whose turn it is
-        
-        Args:
-        p1 (str): name of the first player
-        p2 (str): name of the second player
-        turn(int): number of a turn
-        
-        '''
+    def define_player(self, p1:str, p2:str, turn:int):
+        """Defines whose turn it is"""
         if turn % 2 == 0:
             return p2
         else:
             return p1
 
 
-    def define_turn(self, turn):
-        '''Defines character'''
+    @staticmethod
+    def define_turn(turn):
         if turn % 2 == 0:
             return 'O'
         else:
@@ -256,14 +227,14 @@ class Board:
 
 
     def update_grid(self, column, line, turn):
-        '''Checks for errors in player's input
+        """Checks for errors in player's input
         
         Args:
         column (str): letter of a column
         line (int): number of a line
         turn(int): number of a turn
         
-        '''
+        """
         # Converting a letter to a number in alphabetical order
         column = string.ascii_uppercase.index(column) + 1
         # Defining the letter
@@ -282,7 +253,7 @@ class Board:
 
 
     def print_grid(self):
-        '''Converts and prints the grid in "PrettyTable" view'''
+        """Converts and prints the grid in "PrettyTable" view"""
         grid = PrettyTable()
         # Getting letters for column names
         grid.field_names = self.row_names
