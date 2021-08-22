@@ -20,8 +20,7 @@ class Board:
         self.row_names = row_names 
         self.rows = rows
 
-
-    def build_grid(self, width: str, height: str):
+    def build_grid(self, width: int, height: int):
         # String method is required for column names
         count = 0
         for i in string.ascii_uppercase:
@@ -34,10 +33,8 @@ class Board:
             row = ['' for _ in range(width + 1)]
             row[0] = str(j + 1)
             self.rows.append(row)
-        return
 
-
-    def get_diag(self):
+    def get_diag(self) -> list:
         """Gets all diagonals in current grid"""
         diags = []
         # Size of column is equal to the rows in the grid
@@ -97,9 +94,8 @@ class Board:
                 diags.append(left_diag)
         return diags
 
-
     @staticmethod
-    def check_diag(diags, letter, win_row_size):
+    def check_diag(diags, letter, win_row_size) -> bool:
         """Checks diagonals for wincondition
         
         Args:
@@ -119,8 +115,7 @@ class Board:
                     return True     
         return False
 
-
-    def check_vertical_and_flat(self, column, letter, win_row_size):
+    def check_vertical_and_flat(self, column, letter, win_row_size) -> bool:
         """Checks vertical and horisontal axes for a wincondition
         
         Args:
@@ -152,8 +147,7 @@ class Board:
                 return True
         return False
 
-
-    def check_for_winner(self, column, turn, win_row_size):
+    def check_for_winner(self, column, turn, win_row_size) -> bool:
         """Checks for a winconditions in all directions
         
         Args:
@@ -172,8 +166,7 @@ class Board:
             return not victory
         return victory
 
-
-    def check_for_draw(self):
+    def check_for_draw(self) -> bool:
         """Checks grid to be totally filled"""
         for row in self.rows:
             for elem in row:
@@ -181,13 +174,13 @@ class Board:
                     return False
         return True
 
-
     def get_coordinates(self):
         # Catching possible input errors
         checking = True
+        x_coordinate, y_coordinate = None, None
         while checking:
             #Getting coordinates of player's move
-            print('input coordinates to make your move')
+            print('Input coordinates to make your move')
             coordinates = input().split()
             if len(coordinates) != 2:
                 print('Incorrect letter of a column or number of a line')
@@ -199,7 +192,7 @@ class Board:
                 checking = not checking
         return x_coordinate, y_coordinate
 
-    def check_coordinates(self, x:str, y:str):
+    def check_coordinates(self, x: str, y: str) -> bool:
         """Checks whether the first element is suitable letter and
         second element is in the grid's borders
         """
@@ -209,14 +202,13 @@ class Board:
                 return False
         return True
 
-
-    def define_player(self, p1:str, p2:str, turn:int):
+    @staticmethod
+    def define_player(p1: str, p2: str, turn: int) -> str:
         """Defines whose turn it is"""
         if turn % 2 == 0:
             return p2
         else:
             return p1
-
 
     @staticmethod
     def define_turn(turn):
@@ -224,7 +216,6 @@ class Board:
             return 'O'
         else:
             return 'X'
-
 
     def update_grid(self, column, line, turn):
         """Checks for errors in player's input
@@ -235,22 +226,21 @@ class Board:
         turn(int): number of a turn
         
         """
-        # Converting a letter to a number in alphabetical order
-        column = string.ascii_uppercase.index(column) + 1
-        # Defining the letter
-        letter = self.define_turn(turn)
-        # Adding an element to the grid
-        try:
+        checking = True
+        while checking:
+            # Converting a letter to a number in alphabetical order
+            column = string.ascii_uppercase.index(column) + 1
+            # Defining the letter
+            letter = self.define_turn(turn)
             # Checking for overlay
             if self.rows[line][column] != '':
-                raise Exception('Overlay exception')
-            self.rows[line][column] = letter
-        # Repeating the function if necessary
-        except Exception as e:
-            print('That place is occupied')
-            coordinates = self.get_coordinates()
-            self.update_grid(str(coordinates[0]), int(coordinates[1]), turn)
-
+                print('That place is occupied')
+                # Repeating the function if necessary
+                column, line = self.get_coordinates()
+            else:
+                # Adding an element to the grid
+                self.rows[line][column] = letter
+                checking = not checking
 
     def print_grid(self):
         """Converts and prints the grid in "PrettyTable" view"""
