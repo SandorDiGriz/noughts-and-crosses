@@ -7,7 +7,7 @@ def play():
     """Gets players' data and runs the game"""
     print('\nWelcome, strangers!\n', '\nPlease, define your grid  \
         \n''3 3'' for example')
-    print('\nRemember, that you inputting the width first!')
+    print('\nRemember, you input the width first!')
     # Importing 'Board' class settings
     board = Board()
     # Setting size of grid
